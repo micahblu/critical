@@ -84,7 +84,7 @@ exports.generate = function (opts, cb) {
  * @param  {function} cb Callback
  * @accepts src, base, dest
  */
-exports.inline = function (opts, cb) {
+exports.inline = function (opts, criticalCSS, cb) {
     opts = opts || {};
     cb = cb || function () {};
 
@@ -99,7 +99,7 @@ exports.inline = function (opts, cb) {
             return;
         }
 
-        var out = inliner(data, opts);
+        var out = inliner(data, criticalCSS, opts);
 
         if (opts.dest) {
             // Write HTML with inlined CSS to dest
@@ -143,6 +143,6 @@ exports.generateInline = function (opts, cb) {
         }
 
         inlineOpts.dest = opts.htmlTarget;
-        exports.inline(inlineOpts);
+        exports.inline(inlineOpts, output);
     });
 };

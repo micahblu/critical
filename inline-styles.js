@@ -11,23 +11,23 @@ var url = require('url');
 var inliner = require('imageinliner');
 var CleanCSS = require('clean-css');
 
-module.exports = function(html, opts) {
+module.exports = function(html, css, opts) {
   var base = opts.base || process.cwd();
   var minify = opts.minify;
   var maxImageSize = opts.maxImageFileSize || 10240;
   var dom = cheerio.load(String(html));
-  injectStyles(dom);
+  injectStyles(dom, css);
   return new Buffer(dom.html());
 
-  function injectStyles(dom) {
-    var styles = [];
+  function injectStyles(dom, css) {
+
     dom('link').each(function(idx, el) {
       el = dom(el);
       var href = el.attr('href');
       if (el.attr('rel') === 'stylesheet' && isLocal(href)) {
         var dir = base + path.dirname(href);
         var file = path.join(base, href);
-        var style = fs.readFileSync(file);
+        var style = css;
         var inlined = inliner.css(style.toString(), { maxImageFileSize: maxImageSize, cssBasePath: dir });
         var inlinedStyles = inlined.toString();
         if (minify) {
